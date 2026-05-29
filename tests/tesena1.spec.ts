@@ -29,7 +29,8 @@ test('Přidání položky', async ({ page }) => {
   //await page.getByRole('button', { name: /Přidat do košíku/ }).click();
   await page.locator('//button[@data-button-action="add-to-cart"]').click();
   await page.getByRole('button', { name: 'Pokračovat v nákupu' }).click();
-  
+
+    
   // Otevření stránky CLOTHES
   await page.getByText('Clothes').click();
 
