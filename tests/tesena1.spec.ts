@@ -27,21 +27,27 @@ test('Přidání položky', async ({ page }) => {
   // kontrola URL hrnečku
   await expect(page).toHaveURL(/mug-the-best-is-yet-to-come/);
 
-  // Přidání do košíku
-  //await page.locator('button[data-button-action="add-to-cart"]').click();
-  
-  await page.click('button:has-text("Přidat do košíku")');
+  // Přidání do košíku + čekání na AJAX
+  await Promise.all([
+    page.waitForResponse(resp =>
+      resp.url().includes('cart') && resp.status() === 200
+    ),
+    page.locator('button[data-button-action="add-to-cart"]').click()
+  ]);
 
-  await expect(
-  page.locator('#myModalLabel')
-  ).toBeVisible({ timeout: 10000 });
+  // Modal košíku
+  const modal = page.locator('#blockcart-modal');
 
-await page.getByRole('button', { name: 'Pokračovat v nákupu' }).click();
+  await expect(modal).toBeVisible({ timeout: 15000 });
 
-  /* Ověření popup okna a pokračování v nákupu
-  await expect(page.getByText('Produkt byl úspěšně přidán')).toBeVisible({ timeout: 10000 });
-  await page.click('button:has-text("Pokračovat v nákupu")');*/
-  
+  await expect(modal).toContainText(
+    'Produkt byl úspěšně přidán do nákupního košíku'
+  );
+
+  // Pokračovat v nákupu
+  await modal.getByRole('button', {
+    name: 'Pokračovat v nákupu'
+  }).click();
 
   // Otevření stránky CLOTHES
   await page.getByText('Clothes').click();
@@ -55,20 +61,26 @@ await page.getByRole('button', { name: 'Pokračovat v nákupu' }).click();
   // Výběr velikosti z S na M
   await page.locator('#group_1').selectOption('2'); // M
   
-  // Přidání do košíku
-  //await page.locator('button[data-button-action="add-to-cart"]').click();
-  
-  await page.click('button:has-text("Přidat do košíku")');
+  // Přidání do košíku + čekání na AJAX
+  await Promise.all([
+    page.waitForResponse(resp =>
+      resp.url().includes('cart') && resp.status() === 200
+    ),
+    page.locator('button[data-button-action="add-to-cart"]').click()
+  ]);
 
-  await expect(
-  page.locator('#myModalLabel')
-  ).toBeVisible({ timeout: 10000 });
+  // nový modal pro druhý produkt
+const modal2 = page.locator('#blockcart-modal');
 
-await page.getByRole('button', { name: 'Pokračovat v nákupu' }).click();
+await expect(modal2).toBeVisible({ timeout: 15000 });
 
-  /*/ Ověření popup okna a pokračování v nákupu
-  await expect(page.getByText('Produkt byl úspěšně přidán')).toBeVisible({ timeout: 10000 });
-  await page.click('button:has-text("Pokračovat v nákupu")');*/
+await expect(modal2).toContainText(
+  'Produkt byl úspěšně přidán do nákupního košíku'
+);
+
+await modal2.getByRole('button', {
+  name: 'Pokračovat v nákupu'
+}).click();
   
   // Otevřít Košík
   await page.getByRole('link', { name: 'Košík' }).click();
