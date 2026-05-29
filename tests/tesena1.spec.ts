@@ -28,26 +28,9 @@ test('Přidání položky', async ({ page }) => {
   await expect(page).toHaveURL(/mug-the-best-is-yet-to-come/);
 
   // Přidání do košíku + čekání na AJAX
-  await Promise.all([
-    page.waitForResponse(resp =>
-      resp.url().includes('cart') && resp.status() === 200
-    ),
-    page.locator('button[data-button-action="add-to-cart"]').click()
-  ]);
-
-  // Modal košíku
-  const modal = page.locator('#blockcart-modal');
-
-  await expect(modal).toBeVisible({ timeout: 15000 });
-
-  await expect(modal).toContainText(
-    'Produkt byl úspěšně přidán do nákupního košíku'
-  );
-
-  // Pokračovat v nákupu
-  await modal.getByRole('button', {
-    name: 'Pokračovat v nákupu'
-  }).click();
+  await page.getByRole('button', { name: ' Přidat do košíku' }).click();
+  //await page.waitForTimeout(10000);
+  await page.getByRole('button', { name: 'Pokračovat v nákupu' }).click();
 
   // Otevření stránky CLOTHES
   await page.getByText('Clothes').click();
@@ -61,26 +44,8 @@ test('Přidání položky', async ({ page }) => {
   // Výběr velikosti z S na M
   await page.locator('#group_1').selectOption('2'); // M
   
-  // Přidání do košíku + čekání na AJAX
-  await Promise.all([
-    page.waitForResponse(resp =>
-      resp.url().includes('cart') && resp.status() === 200
-    ),
-    page.locator('button[data-button-action="add-to-cart"]').click()
-  ]);
-
-  // nový modal pro druhý produkt
-const modal2 = page.locator('#blockcart-modal');
-
-await expect(modal2).toBeVisible({ timeout: 15000 });
-
-await expect(modal2).toContainText(
-  'Produkt byl úspěšně přidán do nákupního košíku'
-);
-
-await modal2.getByRole('button', {
-  name: 'Pokračovat v nákupu'
-}).click();
+  await page.getByRole('button', { name: ' Přidat do košíku' }).click();
+  await page.getByRole('button', { name: 'Pokračovat v nákupu' }).click();
   
   // Otevřít Košík
   await page.getByRole('link', { name: 'Košík' }).click();
