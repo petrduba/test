@@ -20,18 +20,16 @@ test('Přidání položky', async ({ page }) => {
   await page.goto('http://37.27.17.198:8084/cs/');
 
   // Klik na produkt hrneček
-  await page.getByRole('link', {
-    name: 'Mug The best is yet to come'
-  }).first().click();
+  await page.getByRole('link', { name: 'Mug The best is yet to come' }).first().click();
 
   // kontrola URL hrnečku
   await expect(page).toHaveURL(/mug-the-best-is-yet-to-come/);
 
-  // Přidání do košíku + čekání na AJAX
-  await page.getByRole('button', { name: ' Přidat do košíku' }).click();
-  //await page.waitForTimeout(10000);
+  // Přidání do košíku 
+  //await page.getByRole('button', { name: /Přidat do košíku/ }).click();
+  await page.locator('//button[@data-button-action="add-to-cart"]').click();
   await page.getByRole('button', { name: 'Pokračovat v nákupu' }).click();
-
+  
   // Otevření stránky CLOTHES
   await page.getByText('Clothes').click();
 
@@ -44,7 +42,8 @@ test('Přidání položky', async ({ page }) => {
   // Výběr velikosti z S na M
   await page.locator('#group_1').selectOption('2'); // M
   
-  await page.getByRole('button', { name: ' Přidat do košíku' }).click();
+  //await page.getByRole('button', { name: /Přidat do košíku/ }).click();
+  await page.locator('//button[@data-button-action="add-to-cart"]').click();
   await page.getByRole('button', { name: 'Pokračovat v nákupu' }).click();
   
   // Otevřít Košík
